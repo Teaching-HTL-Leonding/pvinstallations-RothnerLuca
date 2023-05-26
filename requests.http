@@ -1,4 +1,4 @@
-@host=http://localhost:5121
+@host=http://localhost:5272
 
 ###
 POST {{host}}/installations
@@ -24,24 +24,24 @@ Content-Type: application/json
 }  
 
 ###
-POST {{host}}/installations/2/deactivate
+POST {{host}}/installations/8/deactivate
 
 ###
-POST {{host}}/installations/2/reports
+POST {{host}}/installations/1/reports
 Content-Type: application/json
 
 {  
-  "producedWattage": 3500,  
+  "producedWattage": 3800,  
   "householdWattage": 2000,  
   "batteryWattage": 1000,  
   "gridWattage": 500  
 }  
 
 ###
-GET {{host}}/installations/2/reports?timestamp=2023-05-25T17:19:00&duration=13
+GET {{host}}/installations/9/reports?timestamp=2023-05-26T07:06:00&duration=20
 
 ###
-GET {{host}}/installations/2/timeline?startTimestamp=2023-05-25T17:19:00&duration=130&page=3
+GET {{host}}/installations/1/timeline?startTimestamp=2023-05-26T08:40:00&duration=130&page=2
 
 ###
 GET {{host}}/installations/2/chart?startTimestamp=2023-05-25T18:00:00&duration=130&page=1
