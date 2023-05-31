@@ -24,7 +24,7 @@ Content-Type: application/json
 }  
 
 ###
-POST {{host}}/installations/8/deactivate
+POST {{host}}/installations/3/deactivate
 
 ###
 POST {{host}}/installations/1/reports

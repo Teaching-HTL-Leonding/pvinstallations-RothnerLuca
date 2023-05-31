@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PvDbContext>(options => 
@@ -25,7 +26,14 @@ app.MapPost("/installations", async (PvDbContext context, AddPvInstallationDto n
     };
     await context.PvInstallations.AddAsync(dbPvInstallation);
 
-    // logging
+    InstallationLog installationLog = new() 
+    {
+        Timestamp = DateTime.UtcNow,
+        Action = "Add",
+        PreviousValue = null,
+        NewValue = JsonSerializer.Serialize(newPvInstallation)
+    };
+    await context.InstallationLogs.AddAsync(installationLog);
 
     await context.SaveChangesAsync();
     return Results.Created($"/installations/{dbPvInstallation.ID}", dbPvInstallation.ID);
@@ -35,9 +43,18 @@ app.MapPost("/installations/{id}/deactivate", async (PvDbContext context, int id
 {
     var pvInstallation = await context.PvInstallations.FindAsync(id);
     if (pvInstallation == null) return Results.NotFound();
+
+    InstallationLog installationLog = new() 
+    {
+        Timestamp = DateTime.UtcNow,
+        Action = "Deactivate",
+        PreviousValue = pvInstallation.IsActive.ToString()
+    };
+
     pvInstallation.IsActive = false;
 
-    // logging
+    installationLog.NewValue = pvInstallation.IsActive.ToString();
+    await context.InstallationLogs.AddAsync(installationLog);
 
     await context.SaveChangesAsync();
     return Results.Ok();
